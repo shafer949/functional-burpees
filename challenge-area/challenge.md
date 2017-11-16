@@ -23,8 +23,6 @@ These are a series of **independent** exercises that are aimed at enforcing comm
 
   * You can verify your answers in the browser console, using the latest version of Chrome
 
-  * You can verify your answers from the command line by running `$ node challege-view.js`.  Note that this assumes [node >8.7 is installed](https://nodejs.org/en/).
-
 
 ## Challenges
 
