@@ -8,7 +8,7 @@ These are a series of **independent** exercises that are aimed at enforcing comm
 
 1. Fork this repository
 2. Clone your copy to your desktop
-3. Create a new branch: `git clone -b <YOUR_FIRSTNAME_ANSWERS>`
+3. Create a new branch: `git checkout -b <YOUR_FIRSTNAME_ANSWERS>`
 4. Begin making your changes
 5. Once done, push your branch to your repo: `git push origin <YOUR_FIRSTNAME_ANSWERS>`
 6. Select your new branch on GitHub and click the "pull request" button.
