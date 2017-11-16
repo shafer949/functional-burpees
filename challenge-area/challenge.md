@@ -30,7 +30,7 @@ A successful answer, will be one that solves the challenge asked, while not muta
 
 1. Iterate over the results array, any questions that have & quot; in the text, `replace` that with actual quotes. 
 
-  _HINT_: (`/&quot;, '\"'/g`) is the matcher
+  _HINT_: `replace(/&quot;/g, '"')` is the method and regex expression.
 
 2. The results array should only contain easy questions
 
