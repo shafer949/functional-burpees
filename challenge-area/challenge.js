@@ -1,122 +1,74 @@
-const BASE_URL = `https://opentdb.com/api.php?amount=10&category=18`;
-const fetchedQuestions = fetchQuestions(BASE_URL);
+const BASE_URL = 'https://opentdb.com/api.php?amount=10&category=18';
 
- async function fetchQuestions(url) {
-     let questions, data;
+ const fetchedQuestionsPromise = async () => {
      try {
-         questions = await fetch(url);
-         data = await questions.json();
-   } catch (error) {
-         console.error(error);
-     } finally {
+         const questions = await fetch(BASE_URL);
+         const data = await questions.json();
          const results = await data.results;
          return results;
-     }
+    } catch (error) {
+         console.error(error);
+    } 
  };
 
- async function removeHTMLEntityQuotesFromQuestions(data) {
-     let questions;
-    try {
-        questions = await data;
-  } catch (error) {
-        console.error(error);
-    } finally {
-        const list = questions.map(res => {
-            return res.question.includes('&quot;') ? res.question.replace(/&quot;/g, '"') : res.question;
-        });
-        return console.log('Results with HTML entities removed:', list);
-    }
+const removeHTMLEntityQuotesFromQuestions = (data) => {
+    const list = data.map(res =>  res.question.includes('&quot;') ? res.question.replace(/&quot;/g, '"') : res.question);
+    return list;
+    
 };
-removeHTMLEntityQuotesFromQuestions(fetchedQuestions);
+fetchedQuestionsPromise().then((data) => {
+    const transformedQuestions = removeHTMLEntityQuotesFromQuestions(data);
+    console.log('Results with HTML entities removed:', transformedQuestions);
+});
 
-async function filterQuestionsByDifficulty(data, difficultyType) {
-    let questions;
-   try {
-       questions = await data;
- } catch (error) {
-       console.error(error);
-   } finally {
-        return console.log(difficultyType + ' questions only:', questions.filter(res => res.difficulty == difficultyType));   
-   }
+
+const filterQuestionsByDifficulty = (data, difficulty = 'easy') => {
+    return  data.filter(res => res.difficulty === difficulty);
 };
-filterQuestionsByDifficulty(fetchedQuestions, "easy");
+fetchedQuestionsPromise().then((data) => {
+    const filteredQuestions = filterQuestionsByDifficulty(data);
+    console.log('Easy questions only:', filteredQuestions);
+});
 
-async function sortQuestionsByDifficulty(data) {
-    let questions;
-   try {
-       questions = await data;
- } catch (error) {
-       console.error(error);
-   } finally {
-    return console.log('Sorted by difficulty:', [...questions].sort((a,b) => a.difficulty.toUpperCase() > b.difficulty.toUpperCase()));
-   }
+
+const sortQuestionsByDifficulty = (data) => {
+    return [...data].sort((a,b) => a.difficulty.toUpperCase() > b.difficulty.toUpperCase());
 };
-sortQuestionsByDifficulty(fetchedQuestions);
+fetchedQuestionsPromise().then((data) => {
+    const sortedQuestions = sortQuestionsByDifficulty(data);
+    console.log('Sorted by difficulty:', sortedQuestions);
+});
 
-async function difficultyQuestionCount(data, difficultyType) {
-    let questions;
-   try {
-       questions = await data;
-    } catch (error) {
-       console.error(error);
-    } finally {
-        return questions.reduce((sum,curr) => {
-            return curr.difficulty === difficultyType ? ++sum : sum
-       },0);
-    }
+
+const questionCountBasedOnDificulty = (data) => {
+       const questionCountByDifficulty = {
+            easy: [...filterQuestionsByDifficulty(data)],
+            medium: [...filterQuestionsByDifficulty(data, 'medium')],
+            hard: [...filterQuestionsByDifficulty(data, 'hard')]
+        }   
+        return questionCountByDifficulty;
 };
+fetchedQuestionsPromise().then((data) => {
+    const questionCount = questionCountBasedOnDificulty(data);
+    console.log('Number of questions based on difficulty:', questionCount);
+});
 
-async function questionCountBasedOnDificulty(data) {
-    let questions;
-   try {
-       questions = await data;
-    } catch (error) {
-       console.error(error);
-    } finally {
-        const object = {
-            "easy questions": 0,
-            "medium questions": 0,
-            "hard questions": 0
-        }
-        const questionsCountObject =  questions.reduce((sum,curr) => {
-            const type = curr.difficulty + ' questions';
-            return Object.assign(sum, {
-                [type]: (++sum[type])
-            });
-           
-       },object);
-       return console.log('Number of questions based on difficulty:', questionsCountObject);
-    }
+
+const questionCategoryIsTheSame = (data, category = 'Science: Computers') => {
+    return data.every(res => res.category === category);
 };
-questionCountBasedOnDificulty(fetchedQuestions, 'difficulty');
+fetchedQuestionsPromise().then((data) => {
+    const checkCategoryIsTheSame = questionCategoryIsTheSame(data);
+    console.log('Questions are from the same category:', checkCategoryIsTheSame);
+});
 
-async function checkQuestionCategory(data, category) {
-    let questions;
-   try {
-       questions = await data;
-    } catch (error) {
-       console.error(error);
-    } finally {
-        return console.log('Questions are from the same category:', questions.every(res => res.category === category));
-    }
+
+const filterAndSortQuestions = (data, difficulty = 'medium') => {
+    const questionsByType = filterQuestionsByDifficulty(data, difficulty);
+    const sortedQuestionsByType = [...questionsByType].sort((a,b) => a.type > b.type);
+    return sortedQuestionsByType;
 };
-checkQuestionCategory(fetchedQuestions, "Science: Computers");
-
-async function filterAndSortQuestions(data, difficultyType, filterType) {
-    let questions;
-   try {
-       questions = await data;
-    } catch (error) {
-       console.error(error);
-    } finally {
-        const mediumQuestions = questions.filter(res => res.difficulty == difficultyType);
-        const sortedMediumQuestions = [...mediumQuestions].sort((a,b) => { 
-            a[filterType] > b[filterType]
-        });
-        return console.log('Medium questions sorted by type:', sortedMediumQuestions);
-    }
-};
-filterAndSortQuestions(fetchedQuestions, "medium", "boolean"); 
-
-//Caden assited me with errors that I ran across with async await. Ended up being a typo.  
-//Caden also helped point me in the direction of Object.assign() for #4.
+fetchedQuestionsPromise().then((data) => {
+    const questionsFilteredAndSorted = filterAndSortQuestions(data);
+    console.log('Medium questions sorted by type:', questionsFilteredAndSorted);
+});
