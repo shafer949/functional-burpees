@@ -1,6 +1,6 @@
 const BASE_URL = 'https://opentdb.com/api.php?amount=10&category=18';
 
- const fetchedQuestionsPromise = async () => {
+ const fetchQuestions = async () => {
      try {
          const questions = await fetch(BASE_URL);
          const data = await questions.json();
@@ -16,7 +16,7 @@ const removeHTMLEntityQuotesFromQuestions = (data) => {
     return list;
     
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const transformedQuestions = removeHTMLEntityQuotesFromQuestions(data);
     console.log('Results with HTML entities removed:', transformedQuestions);
 });
@@ -25,7 +25,7 @@ fetchedQuestionsPromise().then((data) => {
 const filterQuestionsByDifficulty = (data, difficulty = 'easy') => {
     return  data.filter(res => res.difficulty === difficulty);
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const filteredQuestions = filterQuestionsByDifficulty(data);
     console.log('Easy questions only:', filteredQuestions);
 });
@@ -34,7 +34,7 @@ fetchedQuestionsPromise().then((data) => {
 const sortQuestionsByDifficulty = (data) => {
     return [...data].sort((a,b) => a.difficulty.toUpperCase() > b.difficulty.toUpperCase());
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const sortedQuestions = sortQuestionsByDifficulty(data);
     console.log('Sorted by difficulty:', sortedQuestions);
 });
@@ -48,7 +48,7 @@ const questionCountBasedOnDificulty = (data) => {
         }   
         return questionCountByDifficulty;
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const questionCount = questionCountBasedOnDificulty(data);
     console.log('Number of questions based on difficulty:', questionCount);
 });
@@ -57,7 +57,7 @@ fetchedQuestionsPromise().then((data) => {
 const questionCategoryIsTheSame = (data, category = 'Science: Computers') => {
     return data.every(res => res.category === category);
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const checkCategoryIsTheSame = questionCategoryIsTheSame(data);
     console.log('Questions are from the same category:', checkCategoryIsTheSame);
 });
@@ -68,7 +68,7 @@ const filterAndSortQuestions = (data, difficulty = 'medium') => {
     const sortedQuestionsByType = [...questionsByType].sort((a,b) => a.type > b.type);
     return sortedQuestionsByType;
 };
-fetchedQuestionsPromise().then((data) => {
+fetchQuestions().then((data) => {
     const questionsFilteredAndSorted = filterAndSortQuestions(data);
     console.log('Medium questions sorted by type:', questionsFilteredAndSorted);
 });
